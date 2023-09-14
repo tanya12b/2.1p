@@ -1,0 +1,80 @@
+const int ledPin = 13;
+//defining the LED pin
+const int pushbuttonPin = 3;
+//defining the pushbutton pin
+
+// Time in milliseconds
+const int dottime = 200;    // Duration of a dot
+const int dashtime = 2 * dottime;  // Duration of a dash
+const int lettertime = 4 * dottime;  // Space for letters
+const int wordtime = 6 * dottime;  // Space for words
+
+//function to turn LED on for a dot
+void dot() {
+  digitalWrite(ledPin, HIGH);       //LED turns on
+  delay(dottime);                   //LED on for dottime milliseconds
+  digitalWrite(ledPin, LOW);          //LED turns off
+  delay(dottime);                    //LED off for dottime milliseconds
+}
+
+//function to turn LED on for a dot
+void dash() {
+  digitalWrite(ledPin, HIGH);               //LED turns on
+  delay(dashtime);                           //LED on for dahtime milliseconds
+  digitalWrite(ledPin, LOW);                 //LED turns off
+  delay(dottime);                            //LED off for dottime milliseconds
+} 
+
+//function for blinking a letter represesnted in Morse aCode
+void blinkLetter(char abc) {
+  switch (abc) {
+    case 'T':
+      dash();                    //Blink "T" as a dash
+      break;
+    case 'A':
+      dot(); dash();              //Blink "A" as a dot and followed by a dash
+      break;
+    case 'N':
+      dash(); dot();            //Blink "  N" as a dash and followed by a dot
+      break;
+    case 'Y':
+      dash(); dot(); dash(); dash();     //Blink "Y" as a dash and dash followed by dash-dash
+      break;
+    case 'A':
+      dot(); dash();              //Blink "A" as a dot and followed by a dash
+      break;
+    
+    default:
+      break;
+  }
+}
+
+void setup() {
+  pinMode(ledPin, OUTPUT);               //LED pin as output 
+  pinMode(pushbuttonPin, INPUT_PULLUP);    //pushbutton pin as an Input
+  digitalWrite(ledPin, LOW);              //at initial,LED is off
+}
+
+void loop() {
+  static bool pushbuttonState = HIGH;             
+  static bool previousButtonState = HIGH;
+  static bool nameBlinking = false;
+     //Initializing pushbutton state variable,previous pushbutton state variable and name blinking flag.
+
+  pushbuttonState = digitalRead(pushbuttonPin);
+
+  if (pushbuttonState == LOW && previousButtonState == HIGH) {
+    nameBlinking = !nameBlinking;             //toggling the name blinking flag
+    if (nameBlinking) {
+      // Starts blinking the name "TANYA"
+      const char name[] = "TANYA";
+      for (int i = 0; i < sizeof(name) - 1; i++) {
+        blinkLetter(name[i]);          //blinking each letter in my name
+        delay(lettertime);              //adding space between letters
+      }
+      delay(wordtime);                //adding space for words
+    }
+  }
+
+  previousButtonState = pushbuttonState;        //update the previous-pushbutton-state.
+}
